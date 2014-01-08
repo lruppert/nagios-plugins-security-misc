@@ -1,0 +1,86 @@
+#!/usr/bin/python
+#
+# This checks that iptables is running. It also optionally checks to ensure
+# that INPUT, OUTPUT, and FORWARD chains are not set to policy ACCEPT
+#
+import argparse
+import os
+import sys
+import subprocess
+import re
+
+IPTABLES="/sbin/iptables"
+IP6TABLES="/sbin/ip6tables"
+MINLENGTH=8
+
+#
+# Looks for iptables binaries
+def has_iptables() :
+    return os.path.exists(IPTABLES)
+
+#
+# Looks for evidence that iptables is running
+def iptables_running() :
+    global listproc
+    global IPTABLES
+    running=False
+    len=0
+    listproc = subprocess.Popen(['/usr/bin/sudo',IPTABLES,'-L'],
+                                stdout=subprocess.PIPE).communicate()[0]
+    for line in listproc.splitlines() :
+        len = len + 1
+
+    if len > MINLENGTH :
+        running=True
+
+    return running
+
+#
+# checks for policies enabled.
+def policy_locked(chain) :
+    locked=False
+    for output in listproc.splitlines() :
+        m = re.match("Chain %s \(policy (\w+)\)" % chain, output)
+        if m:
+            policy = m.group(1)
+            if policy != "ACCEPT":
+                locked=True
+
+    return locked
+
+def parse_cmdline():
+    Args = argparse.ArgumentParser()
+    Args.add_argument('-6',dest='v6',required=False,action='store_true',help= "use ip6tables")
+    Args.add_argument('-p',dest='policies',nargs='+',required=False,help="check that policy is not default ACCEPT")
+    myArgs = Args.parse_args()
+    return myArgs
+
+def main() :
+    global IPTABLES
+    tainted_policies = False
+    args = parse_cmdline()
+    ipv6 = args.v6
+    policies = args.policies
+
+    if ipv6:
+        IPTABLES = IP6TABLES
+
+    if not has_iptables():
+        print "WARNING: No iptables binary found."
+        sys.exit(1)
+    elif not iptables_running():
+        print "CRITICAL: iptables are not running."
+        sys.exit(2)
+    else:
+        if policies:
+            for policy_chain in policies:
+                if not policy_locked(policy_chain):
+                    print "WARNING: %s chain is default ACCEPT" % policy_chain
+                    tainted_policies=True
+            if tainted_policies:
+                sys.exit(1)
+        print "OK: iptables are activated"
+        sys.exit(0)
+
+if __name__ == "__main__" :
+    main()

@@ -1,0 +1,3 @@
+#User_Alias STNRPEUSER=nagios
+#Cmnd_Alias EKEYDCTL=/usr/sbin/ekeydctl
+#STNRPEUSER ALL=(root) NOPASSWD: EKEYDCTL

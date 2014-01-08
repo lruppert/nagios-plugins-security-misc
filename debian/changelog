@@ -1,0 +1,41 @@
+nagios-plugins-security-misc (0.8) stable; urgency=low
+
+  * Forgot to add iptables to setup.py, added example for ip6tables
+
+ -- Lou Ruppert <himself@louruppert.com>  Wed, 08 Jan 2014 21:23:50 +0000
+
+nagios-plugins-security-misc (0.7) stable; urgency=low
+
+  * Corrected nasty collision in naming
+
+ -- Lou Ruppert <himself@louruppert.com>  Wed, 08 Jan 2014 21:17:37 +0000
+
+nagios-plugins-security-misc (0.6) stable; urgency=low
+
+  * Added iptables check, defined config files
+
+ -- Lou Ruppert <himself@louruppert.com>  Wed, 08 Jan 2014 21:14:08 +0000
+
+nagios-plugins-security-misc (0.5) stable; urgency=low
+
+  * Commented out nagios nrpe stub file and suppressed keyid in output of tool
+
+ -- Lou Ruppert <himself@louruppert.com>  Fri, 23 Aug 2013 22:01:00 +0000
+
+nagios-plugins-security-misc (0.4) stable; urgency=low
+
+  * Added nagios nrpe config stub 
+
+ -- Lou Ruppert <himself@louruppert.com>  Fri, 23 Aug 2013 21:43:02 +0000
+
+nagios-plugins-security-misc (0.3) stable; urgency=low
+
+  * Fixed sudoers bit
+
+ -- Lou Ruppert <himself@louruppert.com>  Fri, 23 Aug 2013 21:37:24 +0000
+
+nagios-plugins-security-misc (0.2) stable; urgency=low
+
+  * Initial release.
+
+ -- Lou Ruppert <himself@louruppert.com>  Fri, 23 Aug 2013 21:21:53 +0000

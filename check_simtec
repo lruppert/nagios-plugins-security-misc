@@ -1,0 +1,65 @@
+#!/usr/bin/python
+#
+# This checks the presence of a SIMTEC entropy key.  It also checks some other
+# conditions that may or may not matter.
+#
+import os,sys
+import subprocess
+import re
+
+#
+# Looks for SIMTEC on USB bus
+def has_simtec() :
+    found = False
+    lsusb = subprocess.Popen(['lsusb'], stdout=subprocess.PIPE).communicate()[0]
+    for device in lsusb.splitlines() :
+        m = re.search(".*Simtec Electronics Entropy Key.*", device)
+        if (m != None) :
+            found = True
+    return found
+
+#
+# Looks for evidence that udev has loaded drivers for the device
+def simtec_found() :
+    if os.path.exists("/dev/entropykey"):
+        return True
+    else:
+        return False
+
+#
+# Looks for the identifier and status
+def get_key_status() :
+    listproc = subprocess.Popen(['/usr/bin/sudo','/usr/sbin/ekeydctl', 'list'],
+                                stdout=subprocess.PIPE).communicate()[0]
+    for device in listproc.splitlines() :
+        components = device.split(',')
+        (ok,keyid) = (components[1],components[4])
+        if (ok == "OK") :
+            continue
+        if (ok == "NO") or (ok == "YES"):
+            return (ok,keyid)
+    return (None,None)
+
+
+def main() :
+    if not has_simtec():
+        print "WARNING: No simtec key plugged in."
+        sys.exit(1)
+    elif not simtec_found():
+        print "WARNING: simtec key not found by software."
+        sys.exit(1)
+    else:
+	(ok,keyid) = get_key_status()
+        if not ok:
+            print "WARNING: No keys listed by ekeydctl"
+            sys.exit(1)
+        if ok == "NO":
+            print "CRITICAL: Key is not activated"
+            sys.exit(2)
+#            print "CRITICAL: Key %s is not activated" % keyid
+        print "OK: simtec key is activated"
+#        print "OK: simtec key %s is activated" % keyid
+        sys.exit(0)
+
+if __name__ == "__main__" :
+    main()

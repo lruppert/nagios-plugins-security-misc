@@ -1,0 +1,4 @@
+/etc/sudoers.d/check-iptables
+/etc/sudoers.d/check-simtec
+/etc/nagios/nrpe.d/check-iptables.cfg
+/etc/nagios/nrpe.d/check-simtec.cfg

@@ -1,0 +1,5 @@
+#User_Alias IPTNRPEUSER=nagios
+#Cmnd_Alias IPTABLES=/sbin/iptables -L
+#Cmnd_Alias IP6TABLES=/sbin/ip6tables -L
+#IPTNRPEUSER ALL=(root) NOPASSWD: IPTABLES
+#IPTNRPEUSER ALL=(root) NOPASSWD: IP6TABLES
